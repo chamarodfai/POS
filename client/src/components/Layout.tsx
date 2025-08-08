@@ -43,7 +43,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <button
                 onClick={logout}
                 className="flex items-center gap-2 px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
@@ -52,10 +52,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <LogOut className="w-4 h-4" />
                 <span className="text-sm">ออกจากระบบ</span>
               </button>
+            ) : (
+              <button
+                onClick={() => navigate('/menu')}
+                className="flex items-center gap-2 px-3 py-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                title="เข้าสู่ระบบจัดการ"
+              >
+                <Settings className="w-4 h-4" />
+                <span className="text-sm">เข้าสู่ระบบจัดการ</span>
+              </button>
             )}
-            <button className="p-2 text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100">
-              <Settings className="w-5 h-5" />
-            </button>
           </div>
         </div>
       </header>
@@ -65,7 +71,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <aside className="w-64 bg-white shadow-sm min-h-screen">
           <nav className="p-4">
             <ul className="space-y-2">
-              {navItems.map((item) => {
+              {navItems
+                .filter(item => !item.protected || isAuthenticated)
+                .map((item) => {
                 const Icon = item.icon;
                 return (
                   <li key={item.path}>
