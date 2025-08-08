@@ -110,19 +110,19 @@ const OrderPage: React.FC = () => {
   };
 
   return (
-    <div className="flex gap-6 h-full">
+    <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-full">
       {/* Menu Section */}
-      <div className="flex-1">
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">เมนูเครื่องดื่ม</h2>
+      <div className="flex-1 order-2 lg:order-1">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">เมนูเครื่องดื่ม</h2>
           
           {/* Category Filter */}
-          <div className="flex gap-2 mb-6 overflow-x-auto">
+          <div className="flex gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2">
             {categories.map(category => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
+                className={`px-3 sm:px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors text-sm sm:text-base ${
                   selectedCategory === category
                     ? 'bg-primary-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -134,34 +134,34 @@ const OrderPage: React.FC = () => {
           </div>
 
           {/* Menu Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4">
             {filteredMenuItems.map(item => (
               <div
                 key={item.id}
-                className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+                className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow cursor-pointer"
                 onClick={() => addItem(item)}
               >
-                <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
+                <div className="aspect-square bg-gray-100 rounded-lg mb-2 sm:mb-3 flex items-center justify-center">
                   {item.image ? (
                     <img src={item.image} alt={item.name} className="w-full h-full object-cover rounded-lg" />
                   ) : (
-                    <div className="text-gray-400 text-4xl">🥤</div>
+                    <div className="text-gray-400 text-2xl sm:text-4xl">🥤</div>
                   )}
                 </div>
-                <h3 className="font-semibold text-gray-800 mb-1">{item.name}</h3>
-                <p className="text-sm text-gray-600 mb-2">{item.description}</p>
+                <h3 className="font-semibold text-gray-800 mb-1 text-sm sm:text-base line-clamp-1">{item.name}</h3>
+                <p className="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2">{item.description}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-primary-600">
+                  <span className="text-sm sm:text-lg font-bold text-primary-600">
                     ฿{item.price.toFixed(2)}
                   </span>
                   <button
-                    className="bg-primary-600 text-white p-2 rounded-lg hover:bg-primary-700 transition-colors"
+                    className="bg-primary-600 text-white p-1.5 sm:p-2 rounded-lg hover:bg-primary-700 transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
                       addItem(item);
                     }}
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>
                 </div>
               </div>
@@ -170,48 +170,48 @@ const OrderPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Cart Section */}
-      <div className="w-96">
-        <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
-          <div className="flex items-center gap-2 mb-6">
-            <ShoppingCart className="w-6 h-6 text-primary-600" />
-            <h3 className="text-xl font-bold text-gray-800">รายการสั่งซื้อ</h3>
+      {/* Cart Section - Mobile: Fixed at top, Desktop: Sidebar */}
+      <div className="w-full lg:w-80 xl:w-96 order-1 lg:order-2">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:sticky lg:top-6">
+          <div className="flex items-center gap-2 mb-4 sm:mb-6">
+            <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600" />
+            <h3 className="text-lg sm:text-xl font-bold text-gray-800">รายการสั่งซื้อ</h3>
           </div>
 
           {items.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="text-gray-400 text-6xl mb-4">🛒</div>
-              <p className="text-gray-500">ไม่มีสินค้าในตะกร้า</p>
+            <div className="text-center py-8 sm:py-12">
+              <div className="text-gray-400 text-4xl sm:text-6xl mb-3 sm:mb-4">🛒</div>
+              <p className="text-gray-500 text-sm sm:text-base">ไม่มีสินค้าในตะกร้า</p>
             </div>
           ) : (
             <>
               {/* Cart Items */}
-              <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
+              <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 max-h-48 sm:max-h-64 lg:max-h-80 overflow-y-auto">
                 {items.map(item => (
-                  <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-800">{item.menuItem?.name}</h4>
-                      <p className="text-sm text-gray-600">฿{item.price.toFixed(2)}</p>
+                  <div key={item.id} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 rounded-lg">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-800 text-sm sm:text-base line-clamp-1">{item.menuItem?.name}</h4>
+                      <p className="text-xs sm:text-sm text-gray-600">฿{item.price.toFixed(2)}</p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
                       <button
                         onClick={() => updateQuantity(item.menuItemId, item.quantity - 1)}
                         className="p-1 text-gray-600 hover:text-gray-800"
                       >
-                        <Minus className="w-4 h-4" />
+                        <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
-                      <span className="font-medium w-8 text-center">{item.quantity}</span>
+                      <span className="font-medium w-6 sm:w-8 text-center text-sm sm:text-base">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.menuItemId, item.quantity + 1)}
                         className="p-1 text-gray-600 hover:text-gray-800"
                       >
-                        <Plus className="w-4 h-4" />
+                        <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
                       <button
                         onClick={() => removeItem(item.menuItemId)}
-                        className="p-1 text-red-600 hover:text-red-800 ml-2"
+                        className="p-1 text-red-600 hover:text-red-800 ml-1 sm:ml-2"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
                     </div>
                   </div>
@@ -219,8 +219,8 @@ const OrderPage: React.FC = () => {
               </div>
 
               {/* Promotion Selection */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                   โปรโมชั่น
                 </label>
                 <select
@@ -229,7 +229,7 @@ const OrderPage: React.FC = () => {
                     const promo = promotions.find(p => p.id === e.target.value);
                     applyPromotion(promo);
                   }}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full p-2 sm:p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm sm:text-base"
                 >
                   <option value="">ไม่ใช้โปรโมชั่น</option>
                   {promotions.map(promo => (
@@ -241,36 +241,36 @@ const OrderPage: React.FC = () => {
               </div>
 
               {/* Order Summary */}
-              <div className="space-y-2 mb-6 p-4 bg-gray-50 rounded-lg">
-                <div className="flex justify-between">
+              <div className="space-y-1.5 sm:space-y-2 mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
+                <div className="flex justify-between text-sm sm:text-base">
                   <span>ยอดรวม</span>
                   <span>฿{subtotal.toFixed(2)}</span>
                 </div>
                 {discount > 0 && (
-                  <div className="flex justify-between text-green-600">
+                  <div className="flex justify-between text-green-600 text-sm sm:text-base">
                     <span>ส่วนลด</span>
                     <span>-฿{discount.toFixed(2)}</span>
                   </div>
                 )}
-                <hr className="my-2" />
-                <div className="flex justify-between font-bold text-lg">
+                <hr className="my-1.5 sm:my-2" />
+                <div className="flex justify-between font-bold text-base sm:text-lg">
                   <span>ยอดสุทธิ</span>
                   <span className="text-primary-600">฿{total.toFixed(2)}</span>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <button
                   onClick={handlePayment}
-                  className="w-full btn-primary flex items-center justify-center gap-2"
+                  className="w-full btn-primary flex items-center justify-center gap-2 py-2.5 sm:py-3 text-sm sm:text-base"
                 >
-                  <Receipt className="w-5 h-5" />
+                  <Receipt className="w-4 h-4 sm:w-5 sm:h-5" />
                   ชำระเงิน
                 </button>
                 <button
                   onClick={clearCart}
-                  className="w-full btn-secondary"
+                  className="w-full btn-secondary py-2 sm:py-2.5 text-sm sm:text-base"
                 >
                   ล้างรายการ
                 </button>

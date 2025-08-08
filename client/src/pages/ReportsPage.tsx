@@ -73,15 +73,15 @@ const ReportsPage: React.FC = () => {
   ];
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">รายงานการขาย</h1>
+    <div className="p-3 sm:p-4 lg:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">รายงานการขาย</h1>
         
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <select
             value={selectedPeriod}
             onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           >
             {periodOptions.map(option => (
               <option key={option.value} value={option.value}>
@@ -94,7 +94,7 @@ const ReportsPage: React.FC = () => {
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           />
         </div>
       </div>
@@ -104,53 +104,53 @@ const ReportsPage: React.FC = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
       ) : reportData ? (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <ShoppingBag className="w-6 h-6 text-blue-600" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-blue-100 rounded-lg">
+                  <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">จำนวนออเดอร์</p>
-                  <p className="text-2xl font-bold text-gray-800">{reportData.totalOrders}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">จำนวนออเดอร์</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-800">{reportData.totalOrders}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-green-100 rounded-lg">
-                  <DollarSign className="w-6 h-6 text-green-600" />
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-green-100 rounded-lg">
+                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">ยอดขายรวม</p>
-                  <p className="text-2xl font-bold text-gray-800">฿{reportData.totalRevenue.toFixed(2)}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">ยอดขายรวม</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-800">฿{reportData.totalRevenue.toFixed(2)}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-yellow-100 rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-yellow-600" />
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-yellow-100 rounded-lg">
+                  <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">กำไรรวม</p>
-                  <p className="text-2xl font-bold text-gray-800">฿{reportData.totalProfit.toFixed(2)}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">กำไรรวม</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-800">฿{reportData.totalProfit.toFixed(2)}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-purple-100 rounded-lg">
-                  <BarChart3 className="w-6 h-6 text-purple-600" />
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-purple-100 rounded-lg">
+                  <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">ยอดขายเฉลี่ย</p>
-                  <p className="text-2xl font-bold text-gray-800">
+                  <p className="text-xs sm:text-sm text-gray-600">ยอดขายเฉลี่ย</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-800">
                     ฿{reportData.totalOrders > 0 ? (reportData.totalRevenue / reportData.totalOrders).toFixed(2) : '0.00'}
                   </p>
                 </div>
@@ -159,7 +159,7 @@ const ReportsPage: React.FC = () => {
           </div>
 
           {/* Sales Trend Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <SalesTrendChart
               data={trendData}
               type="line"
@@ -177,27 +177,27 @@ const ReportsPage: React.FC = () => {
           </div>
 
           {/* Top Selling Items */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-blue-600" />
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
               สินค้าขายดี
             </h3>
             
             {reportData.topSellingItems && reportData.topSellingItems.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {reportData.topSellingItems.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-sm font-bold text-blue-600">#{index + 1}</span>
+                  <div key={index} className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-xs sm:text-sm font-bold text-blue-600">#{index + 1}</span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-800">{item.name}</p>
-                        <p className="text-sm text-gray-600">ขายได้ {item.quantity} รายการ</p>
+                        <p className="font-medium text-gray-800 text-sm sm:text-base">{item.name}</p>
+                        <p className="text-xs sm:text-sm text-gray-600">ขายได้ {item.quantity} รายการ</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-gray-800">฿{item.revenue.toFixed(2)}</p>
+                      <p className="font-semibold text-gray-800 text-sm sm:text-base">฿{item.revenue.toFixed(2)}</p>
                       <p className="text-sm text-gray-600">รายได้</p>
                     </div>
                   </div>

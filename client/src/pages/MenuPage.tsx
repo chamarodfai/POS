@@ -115,72 +115,75 @@ const MenuPage: React.FC = () => {
   ])).filter(Boolean);
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">จัดการเมนู</h1>
+    <div className="p-3 sm:p-4 lg:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">จัดการเมนู</h1>
         <button
           onClick={() => {
             resetForm();
             setShowModal(true);
           }}
-          className="btn-primary flex items-center gap-2"
+          className="btn-primary flex items-center gap-2 py-2 sm:py-2.5 px-3 sm:px-4 text-sm sm:text-base"
         >
-          <Plus className="w-5 h-5" />
-          เพิ่มเมนูใหม่
+          <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="hidden sm:inline">เพิ่มเมนูใหม่</span>
+          <span className="sm:hidden">เพิ่ม</span>
         </button>
       </div>
 
       {/* Menu Items Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
         {menuItems.map(item => (
           <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div className="aspect-square bg-gray-100 flex items-center justify-center">
               {item.image ? (
                 <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
               ) : (
-                <Coffee className="w-16 h-16 text-gray-400" />
+                <Coffee className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" />
               )}
             </div>
             
-            <div className="p-4">
+            <div className="p-3 sm:p-4">
               <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-gray-800">{item.name}</h3>
-                <span className={`px-2 py-1 text-xs rounded-full ${
+                <h3 className="font-semibold text-gray-800 text-sm sm:text-base line-clamp-1">{item.name}</h3>
+                <span className={`px-2 py-1 text-xs rounded-full ml-1 ${
                   item.available 
                     ? 'bg-green-100 text-green-800' 
                     : 'bg-red-100 text-red-800'
                 }`}>
-                  {item.available ? 'พร้อมขาย' : 'ไม่พร้อมขาย'}
+                  <span className="hidden sm:inline">{item.available ? 'พร้อมขาย' : 'ไม่พร้อมขาย'}</span>
+                  <span className="sm:hidden">{item.available ? '✓' : '✗'}</span>
                 </span>
               </div>
               
-              <p className="text-sm text-gray-600 mb-2">{item.description}</p>
-              <p className="text-sm text-gray-500 mb-2">หมวดหมู่: {item.category}</p>
+              <p className="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2">{item.description}</p>
+              <p className="text-xs text-gray-500 mb-2 line-clamp-1">หมวดหมู่: {item.category}</p>
               
               <div className="flex items-center justify-between mb-2">
                 <div className="space-y-1">
-                  <div className="text-lg font-bold text-primary-600">
+                  <div className="text-base sm:text-lg font-bold text-primary-600">
                     ฿{item.price.toFixed(2)}
                   </div>
                   {item.cost && (
                     <div className="text-xs text-gray-500">
-                      ต้นทุน: ฿{item.cost.toFixed(2)} | กำไร: ฿{(item.price - item.cost).toFixed(2)}
+                      <span className="hidden sm:inline">ต้นทุน: ฿{item.cost.toFixed(2)} | กำไร: ฿{(item.price - item.cost).toFixed(2)}</span>
+                      <span className="sm:hidden">กำไร: ฿{(item.price - item.cost).toFixed(2)}</span>
                     </div>
                   )}
                 </div>
                 
-                <div className="flex gap-2">
+                <div className="flex gap-1 sm:gap-2">
                   <button
                     onClick={() => handleEdit(item)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                   >
-                    <Edit className="w-4 h-4" />
+                    <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>
                 </div>
               </div>
@@ -191,10 +194,10 @@ const MenuPage: React.FC = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4 sm:mb-6">
                 {editingItem ? 'แก้ไขเมนู' : 'เพิ่มเมนูใหม่'}
               </h3>
 
