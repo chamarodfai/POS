@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Minus, Trash2, ShoppingCart, Receipt } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { useCartStore } from '../stores';
+import { useCartStore } from '../stores/cartStore';
 import apiConfig from '../services/api-config';
 import { MenuItem, Promotion } from '../types';
 import PaymentConfirmation from '../components/PaymentConfirmation';
