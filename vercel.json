@@ -11,8 +11,36 @@
   ],
   "routes": [
     {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
       "src": "/assets/(.*)",
       "dest": "/assets/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
+    },
+    {
+      "src": "/order",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/daily-sales",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/menu",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/promotions",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/reports",
+      "dest": "/index.html"
     },
     {
       "src": "/(.*)",
