@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ทดสอบ POS API</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        
+        .test-section h3 {
+            color: #555;
+            margin-top: 0;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .success {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        
+        .error {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        
+        .url-display {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 ทดสอบ POS API</h1>
+        
+        <div class="url-display">
+            API URL: <input type="text" id="api-url" value="https://script.google.com/macros/s/AKfycbwPY7wJe7W-VwiguoROToQk_KPSGFdISvb-kbV_DCcEp2tXB9laW0CJrCRpA2lEa4yeMg/exec" style="width: 100%; padding: 5px; margin-top: 5px;">
+            <button onclick="updateAPIUrl()" style="margin-top: 5px;">อัปเดต URL</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>1. ทดสอบการเชื่อมต่อ API</h3>
+            <button onclick="testAPI()">ทดสอบ API</button>
+            <button onclick="testDirectURL()">เปิด URL โดยตรง</button>
+            <div id="test-response" class="response" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. สร้างฐานข้อมูล</h3>
+            <button onclick="setupDatabase()">สร้างตารางฐานข้อมูล</button>
+            <div id="setup-response" class="response" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. ทดสอบดึงข้อมูลเมนู</h3>
+            <button onclick="getMenuItems()">ดึงข้อมูลเมนู</button>
+            <div id="menu-response" class="response" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4. เพิ่มเมนูทดสอบ</h3>
+            <button onclick="addTestMenuItem()">เพิ่มเมนูเครื่องดื่ม</button>
+            <button onclick="addTestDessert()">เพิ่มเมนูขนม</button>
+            <button onclick="addTestTopping()">เพิ่มเมนู Topping</button>
+            <div id="add-response" class="response" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>5. ทดสอบแก้ไขและลบเมนู</h3>
+            <button onclick="updateTestMenuItem()">แก้ไขเมนูทดสอบ</button>
+            <button onclick="deleteTestMenuItem()">ลบเมนูทดสอบ</button>
+            <div id="update-delete-response" class="response" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>6. สร้างออเดอร์ทดสอบ</h3>
+            <button onclick="createTestOrder()">สร้างออเดอร์ทดสอบ</button>
+            <div id="order-response" class="response" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // กำหนด API URL - เปลี่ยนเป็น let แทน const เพื่อให้สามารถเปลี่ยนแปลงได้
+        let API_URL = 'https://script.google.com/macros/s/AKfycbwPY7wJe7W-VwiguoROToQk_KPSGFdISvb-kbV_DCcEp2tXB9laW0CJrCRpA2lEa4yeMg/exec';
+        
+        function updateAPIUrl() {
+            const newUrl = document.getElementById('api-url').value;
+            API_URL = newUrl;
+            console.log('API URL updated to:', API_URL);
+            alert('URL อัปเดตแล้ว: ' + API_URL);
+        }
+        
+        function testDirectURL() {
+            const testUrls = [
+                `${API_URL}?action=test`,
+                `${API_URL}?action=test&callback=testCallback`,
+                `${API_URL}?action=getMenuItems`,
+                `${API_URL}?action=getMenuItems&callback=testCallback`
+            ];
+            
+            console.log('Testing multiple URLs:');
+            testUrls.forEach((url, index) => {
+                console.log(`URL ${index + 1}:`, url);
+                window.open(url, `_blank_${index}`);
+            });
+        }
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                console.log('makeRequest called with URL:', url);
+                console.log('makeRequest options:', options);
+                
+                // สำหรับ GET requests ใช้ JSONP เสมอ (ไม่ใช้ fetch เลย)
+                if (!options.method || options.method === 'GET') {
+                    console.log('Using JSONP for GET request');
+                    try {
+                        const result = await makeJSONPRequest(url);
+                        console.log('JSONP success:', result);
+                        return result;
+                    } catch (jsonpError) {
+                        console.error('JSONP failed:', jsonpError);
+                        // ถ้า JSONP ล้มเหลว ให้ส่งข้อความแจ้งให้ทดสอบ URL โดยตรง
+                        return {
+                            success: false,
+                            message: 'JSONP failed: ' + jsonpError.message + '. Try opening the URL directly.',
+                            data: null
+                        };
+                    }
+                }
+                
+                // สำหรับ POST requests ใช้ fetch ปกติ
+                console.log('Using fetch for POST request');
+                const response = await fetch(url, {
+                    ...options,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+                
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('makeRequest error:', error);
+                return {
+                    success: false,
+                    message: 'Network error: ' + error.message,
+                    data: null
+                };
+            }
+        }
+        
+        function makeJSONPRequest(url) {
+            return new Promise((resolve, reject) => {
+                console.log('Making JSONP request to:', url);
+                
+                // เพิ่ม callback parameter สำหรับ JSONP
+                const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+                const separator = url.indexOf('?') !== -1 ? '&' : '?';
+                const finalUrl = url + separator + 'callback=' + callbackName;
+                
+                console.log('Final JSONP URL:', finalUrl);
+                console.log('Callback function name:', callbackName);
+                
+                // สร้าง script tag
+                const script = document.createElement('script');
+                script.src = finalUrl;
+                
+                // สร้าง callback function
+                window[callbackName] = function(data) {
+                    console.log('JSONP callback received data:', data);
+                    clearTimeout(timeoutId);
+                    resolve(data);
+                    try {
+                        document.head.removeChild(script);
+                    } catch (e) {
+                        console.log('Error removing script:', e);
+                    }
+                    delete window[callbackName];
+                };
+                
+                // Handle errors
+                script.onerror = function() {
+                    console.error('JSONP script error for URL:', finalUrl);
+                    clearTimeout(timeoutId);
+                    reject(new Error('JSONP request failed'));
+                    try {
+                        document.head.removeChild(script);
+                    } catch (e) {
+                        console.log('Error removing script:', e);
+                    }
+                    delete window[callbackName];
+                };
+                
+                // Handle load
+                script.onload = function() {
+                    console.log('JSONP script loaded successfully');
+                };
+                
+                // Add script to head
+                document.head.appendChild(script);
+                console.log('JSONP script added to head');
+                
+                // Fallback: ถ้าไม่ได้ response ใน 10 วินาที
+                const timeoutId = setTimeout(() => {
+                    if (window[callbackName]) {
+                        console.error('JSONP request timeout for URL:', finalUrl);
+                        reject(new Error('JSONP request timeout'));
+                        try {
+                            document.head.removeChild(script);
+                        } catch (e) {
+                            console.log('Error removing script:', e);
+                        }
+                        delete window[callbackName];
+                    }
+                }, 10000);
+            });
+        }
+        
+        function displayResponse(elementId, data) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = 'response ' + (data.success ? 'success' : 'error');
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+        
+        async function testAPI() {
+            console.log('Testing API...');
+            const fullUrl = `${API_URL}?action=test`;
+            console.log('Full URL:', fullUrl);
+            const data = await makeRequest(fullUrl);
+            displayResponse('test-response', data);
+        }
+        
+        async function setupDatabase() {
+            console.log('Setting up database...');
+            const data = await makeRequest(`${API_URL}?action=setup`);
+            displayResponse('setup-response', data);
+        }
+        
+        async function getMenuItems() {
+            console.log('Getting menu items...');
+            const data = await makeRequest(`${API_URL}?action=getMenuItems`);
+            displayResponse('menu-response', data);
+        }
+        
+        async function addTestMenuItem() {
+            console.log('Adding test menu item...');
+            
+            // เปลี่ยนเป็น GET request โดยส่งข้อมูลผ่าน URL parameters
+            const params = new URLSearchParams({
+                action: 'createMenuItem',
+                name: 'ชาไทยเย็น',
+                price: '45',
+                cost: '20',
+                category: 'เครื่องดื่ม',
+                description: 'ชาไทยเย็นหอมหวาน เสิร์ฟด้วยน้ำแข็ง',
+                image: 'https://example.com/cha-thai-yen.jpg',
+                available: 'true'
+            });
+            
+            const fullUrl = `${API_URL}?${params.toString()}`;
+            console.log('Full URL for addTestMenuItem:', fullUrl);
+            
+            const data = await makeRequest(fullUrl);
+            displayResponse('add-response', data);
+        }
+        
+        async function addTestDessert() {
+            console.log('Adding test dessert...');
+            
+            const params = new URLSearchParams({
+                action: 'createMenuItem',
+                name: 'ขนมเค้กช็อกโกแลต',
+                price: '85',
+                cost: '40',
+                category: 'ขนม',
+                description: 'เค้กช็อกโกแลตนุ่มหวาน เสิร์ฟพร้อมไอศกรีมวานิลลา',
+                image: 'https://example.com/chocolate-cake.jpg',
+                available: 'true'
+            });
+            
+            const fullUrl = `${API_URL}?${params.toString()}`;
+            console.log('Full URL for addTestDessert:', fullUrl);
+            
+            const data = await makeRequest(fullUrl);
+            displayResponse('add-response', data);
+        }
+        
+        async function addTestTopping() {
+            console.log('Adding test topping...');
+            
+            const params = new URLSearchParams({
+                action: 'createMenuItem',
+                name: 'ไข่ดาว',
+                price: '15',
+                cost: '8',
+                category: 'Topping',
+                description: 'ไข่ดาวสดใหม่ ทอดสุกกำลังดี',
+                image: 'https://example.com/fried-egg.jpg',
+                available: 'true'
+            });
+            
+            const fullUrl = `${API_URL}?${params.toString()}`;
+            console.log('Full URL for addTestTopping:', fullUrl);
+            
+            const data = await makeRequest(fullUrl);
+            displayResponse('add-response', data);
+        }
+        
+        async function createTestOrder() {
+            console.log('Creating test order...');
+            
+            // เปลี่ยนเป็น GET request โดยส่งข้อมูลผ่าน URL parameters
+            const params = new URLSearchParams({
+                action: 'createOrder',
+                // ส่งข้อมูล order เป็น JSON string
+                orderData: JSON.stringify({
+                    items: [
+                        {
+                            menuItemId: 'menu-test-001',
+                            menuItemName: 'ข้าวผัดกุ้ง',
+                            quantity: 2,
+                            price: 120
+                        },
+                        {
+                            menuItemId: 'menu-test-002',
+                            menuItemName: 'ต้มยำกุ้ง',
+                            quantity: 1,
+                            price: 150
+                        }
+                    ],
+                    discount: 0,
+                    status: 'pending'
+                })
+            });
+            
+            const fullUrl = `${API_URL}?${params.toString()}`;
+            console.log('Full URL for createTestOrder:', fullUrl);
+            
+            const data = await makeRequest(fullUrl);
+            displayResponse('order-response', data);
+        }
+        
+        async function updateTestMenuItem() {
+            console.log('Updating test menu item...');
+            
+            // ดึงข้อมูลเมนูที่มีอยู่ก่อน
+            try {
+                const menuResponse = await makeRequest(`${API_URL}?action=getMenuItems`);
+                if (!menuResponse.success || !menuResponse.data || menuResponse.data.length === 0) {
+                    displayResponse('update-delete-response', {
+                        success: false,
+                        message: 'ไม่พบเมนูในระบบ กรุณาเพิ่มเมนูก่อน'
+                    });
+                    return;
+                }
+                
+                // ใช้ ID ของเมนูแรกที่พบ
+                const firstMenuItem = menuResponse.data[0];
+                const menuId = firstMenuItem.id;
+                
+                console.log('Found menu item ID:', menuId);
+                
+                const params = new URLSearchParams({
+                    action: 'updateMenuItem',
+                    id: menuId,
+                    name: firstMenuItem.name + ' (แก้ไข)',
+                    price: (parseFloat(firstMenuItem.price) + 5).toString(),
+                    cost: firstMenuItem.cost?.toString() || '0',
+                    category: firstMenuItem.category,
+                    description: (firstMenuItem.description || '') + ' - อัปเดตเมื่อ ' + new Date().toLocaleString('th-TH'),
+                    image: firstMenuItem.image || '',
+                    available: 'true'
+                });
+                
+                const fullUrl = `${API_URL}?${params.toString()}`;
+                console.log('Full URL for updateTestMenuItem:', fullUrl);
+                
+                const data = await makeRequest(fullUrl);
+                displayResponse('update-delete-response', data);
+            } catch (error) {
+                displayResponse('update-delete-response', {
+                    success: false,
+                    message: 'เกิดข้อผิดพลาด: ' + error.message
+                });
+            }
+        }
+        
+        async function deleteTestMenuItem() {
+            console.log('Deleting test menu item...');
+            
+            // ดึงข้อมูลเมนูที่มีอยู่ก่อน
+            try {
+                const menuResponse = await makeRequest(`${API_URL}?action=getMenuItems`);
+                if (!menuResponse.success || !menuResponse.data || menuResponse.data.length === 0) {
+                    displayResponse('update-delete-response', {
+                        success: false,
+                        message: 'ไม่พบเมนูในระบบ กรุณาเพิ่มเมนูก่อน'
+                    });
+                    return;
+                }
+                
+                // ใช้ ID ของเมนูสุดท้าย (เพื่อไม่ให้ลบเมนูแรก)
+                const lastMenuItem = menuResponse.data[menuResponse.data.length - 1];
+                const menuId = lastMenuItem.id;
+                
+                console.log('Found menu item ID to delete:', menuId);
+                
+                // แสดง confirm
+                if (!confirm(`ต้องการลบเมนู "${lastMenuItem.name}" ใช่หรือไม่?`)) {
+                    displayResponse('update-delete-response', {
+                        success: false,
+                        message: 'ยกเลิกการลบ'
+                    });
+                    return;
+                }
+                
+                const params = new URLSearchParams({
+                    action: 'deleteMenuItem',
+                    id: menuId
+                });
+                
+                const fullUrl = `${API_URL}?${params.toString()}`;
+                console.log('Full URL for deleteTestMenuItem:', fullUrl);
+                
+                const data = await makeRequest(fullUrl);
+                displayResponse('update-delete-response', data);
+            } catch (error) {
+                displayResponse('update-delete-response', {
+                    success: false,
+                    message: 'เกิดข้อผิดพลาด: ' + error.message
+                });
+            }
+        }
+        
+        // ทดสอบการเชื่อมต่อทันทีเมื่อโหลดหน้า
+        window.addEventListener('load', function() {
+            console.log('Page loaded. API URL:', API_URL);
+        });
+    </script>
+</body>
+</html>

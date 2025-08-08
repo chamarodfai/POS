@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System - ระบบขายหน้าร้าน</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .menu-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .cart-section {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            height: fit-content;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .menu-item h3 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .menu-item p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.1em;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background: #5a67d8;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .cart-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-total {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            color: #27ae60;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .promotion-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .promotion-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+
+        .status-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 ระบบขายหน้าร้าน (POS)</h1>
+            <p>เชื่อมต่อกับ Google Sheets ผ่าน Google Apps Script</p>
+        </div>
+
+        <div class="content">
+            <div class="menu-section">
+                <h2 class="section-title">📋 รายการเมนู</h2>
+                <div id="menuItems" class="menu-grid">
+                    <div class="loading">กำลังโหลดข้อมูล...</div>
+                </div>
+            </div>
+
+            <div class="cart-section">
+                <h2 class="section-title">🛒 ตะกร้าสินค้า</h2>
+                <div id="cartItems">
+                    <div class="empty-cart">ตะกร้าสินค้าว่างเปล่า</div>
+                </div>
+                <div id="cartTotal" class="cart-total">รวม: 0 บาท</div>
+                
+                <div class="promotion-section">
+                    <h3>🎁 โปรโมชัน</h3>
+                    <div id="promotions">
+                        <div class="loading">กำลังโหลดโปรโมชัน...</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-success checkout-btn" onclick="checkout()">
+                    สั่งซื้อ
+                </button>
+                <button class="btn btn-danger checkout-btn" onclick="posManager.clearCart()" style="margin-top: 10px;">
+                    ล้างตะกร้า
+                </button>
+            </div>
+        </div>
+
+        <div id="statusMessage"></div>
+    </div>
+
+    <script>
+        // กำหนด URL ของ Google Apps Script Web App
+        const API_BASE_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+        // คลาส API Client (ใช้จากไฟล์ pos-api-client.js)
+        class POSAPIClient {
+            constructor(baseUrl) {
+                this.baseUrl = baseUrl;
+            }
+
+            async makeRequest(endpoint, options = {}) {
+                try {
+                    const url = endpoint.includes('?') 
+                        ? `${this.baseUrl}${endpoint}`
+                        : `${this.baseUrl}?${endpoint}`;
+                        
+                    const response = await fetch(url, {
+                        ...options,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...options.headers
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    return result;
+                } catch (error) {
+                    console.error('API Request Error:', error);
+                    throw error;
+                }
+            }
+
+            async getMenuItems() {
+                return await this.makeRequest('action=getMenuItems');
+            }
+
+            async getPromotions() {
+                return await this.makeRequest('action=getPromotions');
+            }
+
+            async createOrder(orderData) {
+                return await this.makeRequest('', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'createOrder',
+                        order: orderData
+                    })
+                });
+            }
+
+            async applyPromotion(promotionId, orderAmount) {
+                return await this.makeRequest('', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'applyPromotion',
+                        promotionId: promotionId,
+                        orderAmount: orderAmount
+                    })
+                });
+            }
+        }
+
+        // คลาส POS Manager
+        class POSManager {
+            constructor() {
+                this.api = new POSAPIClient(API_BASE_URL);
+                this.menuItems = [];
+                this.cart = [];
+                this.promotions = [];
+                this.currentDiscount = 0;
+                this.currentPromotionId = null;
+            }
+
+            async loadMenuItems() {
+                try {
+                    const result = await this.api.getMenuItems();
+                    if (result.success) {
+                        this.menuItems = result.data;
+                        this.displayMenuItems();
+                    } else {
+                        this.showStatus('เกิดข้อผิดพลาดในการโหลดเมนู: ' + result.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error loading menu items:', error);
+                    this.showStatus('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้', 'error');
+                }
+            }
+
+            async loadPromotions() {
+                try {
+                    const result = await this.api.getPromotions();
+                    if (result.success) {
+                        this.promotions = result.data.filter(promo => promo.active);
+                        this.displayPromotions();
+                    }
+                } catch (error) {
+                    console.error('Error loading promotions:', error);
+                }
+            }
+
+            addToCart(menuItemId, quantity = 1) {
+                const menuItem = this.menuItems.find(item => item.id === menuItemId);
+                if (!menuItem) {
+                    this.showStatus('ไม่พบสินค้าที่เลือก', 'error');
+                    return;
+                }
+
+                const existingItem = this.cart.find(item => item.menuItemId === menuItemId);
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else {
+                    this.cart.push({
+                        menuItemId: menuItemId,
+                        menuItemName: menuItem.name,
+                        quantity: quantity,
+                        price: menuItem.price
+                    });
+                }
+
+                this.updateCartDisplay();
+                this.showStatus(`เพิ่ม ${menuItem.name} ลงในตะกร้าแล้ว`, 'success');
+            }
+
+            removeFromCart(menuItemId) {
+                const item = this.cart.find(item => item.menuItemId === menuItemId);
+                if (item) {
+                    this.cart = this.cart.filter(item => item.menuItemId !== menuItemId);
+                    this.updateCartDisplay();
+                    this.showStatus(`ลบ ${item.menuItemName} ออกจากตะกร้าแล้ว`, 'success');
+                }
+            }
+
+            getCartTotal() {
+                return this.cart.reduce((total, item) => total + (item.quantity * item.price), 0);
+            }
+
+            clearCart() {
+                this.cart = [];
+                this.currentDiscount = 0;
+                this.currentPromotionId = null;
+                this.updateCartDisplay();
+                this.showStatus('ล้างตะกร้าสินค้าแล้ว', 'success');
+            }
+
+            async applyPromotion(promotionId) {
+                const cartTotal = this.getCartTotal();
+                
+                if (cartTotal === 0) {
+                    this.showStatus('กรุณาเพิ่มสินค้าในตะกร้าก่อน', 'error');
+                    return;
+                }
+
+                try {
+                    const result = await this.api.applyPromotion(promotionId, cartTotal);
+                    if (result.success) {
+                        const discountData = result.data;
+                        this.currentDiscount = discountData.discountAmount;
+                        this.currentPromotionId = promotionId;
+                        this.updateCartDisplay();
+                        this.showStatus(`ใช้โปรโมชัน "${discountData.promotion.name}" สำเร็จ ประหยัด ${discountData.discountAmount} บาท!`, 'success');
+                    } else {
+                        this.showStatus(result.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error applying promotion:', error);
+                    this.showStatus('เกิดข้อผิดพลาดในการใช้โปรโมชัน', 'error');
+                }
+            }
+
+            async createOrder() {
+                if (this.cart.length === 0) {
+                    this.showStatus('ตะกร้าสินค้าว่างเปล่า', 'error');
+                    return false;
+                }
+
+                try {
+                    const orderData = {
+                        items: this.cart,
+                        discount: this.currentDiscount,
+                        promotionId: this.currentPromotionId,
+                        status: 'pending'
+                    };
+
+                    const result = await this.api.createOrder(orderData);
+                    if (result.success) {
+                        this.showStatus(`สร้างออเดอร์สำเร็จ! หมายเลขออเดอร์: ${result.data.orderNumber}`, 'success');
+                        this.clearCart();
+                        return result.data;
+                    } else {
+                        this.showStatus('เกิดข้อผิดพลาดในการสร้างออเดอร์: ' + result.message, 'error');
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('Error creating order:', error);
+                    this.showStatus('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+                    return false;
+                }
+            }
+
+            displayMenuItems() {
+                const container = document.getElementById('menuItems');
+                if (!container) return;
+
+                if (this.menuItems.length === 0) {
+                    container.innerHTML = '<div class="loading">ไม่พบรายการเมนู</div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                this.menuItems.forEach(item => {
+                    if (item.available) {
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'menu-item';
+                        itemElement.innerHTML = `
+                            <h3>${item.name}</h3>
+                            <p>${item.description}</p>
+                            <p class="price">ราคา: ${item.price.toLocaleString()} บาท</p>
+                            <button class="btn" onclick="posManager.addToCart('${item.id}')">เพิ่มในตะกร้า</button>
+                        `;
+                        container.appendChild(itemElement);
+                    }
+                });
+            }
+
+            updateCartDisplay() {
+                const container = document.getElementById('cartItems');
+                const totalElement = document.getElementById('cartTotal');
+                
+                if (container) {
+                    if (this.cart.length === 0) {
+                        container.innerHTML = '<div class="empty-cart">ตะกร้าสินค้าว่างเปล่า</div>';
+                    } else {
+                        container.innerHTML = '';
+                        this.cart.forEach(item => {
+                            const itemElement = document.createElement('div');
+                            itemElement.className = 'cart-item';
+                            itemElement.innerHTML = `
+                                <div>
+                                    <div>${item.menuItemName}</div>
+                                    <small>จำนวน: ${item.quantity} × ${item.price.toLocaleString()} = ${(item.quantity * item.price).toLocaleString()} บาท</small>
+                                </div>
+                                <button class="btn btn-danger" onclick="posManager.removeFromCart('${item.menuItemId}')">ลบ</button>
+                            `;
+                            container.appendChild(itemElement);
+                        });
+                    }
+                }
+
+                if (totalElement) {
+                    const subtotal = this.getCartTotal();
+                    const total = subtotal - this.currentDiscount;
+                    
+                    let totalHTML = `<div>ยอดรวม: ${subtotal.toLocaleString()} บาท</div>`;
+                    if (this.currentDiscount > 0) {
+                        totalHTML += `<div style="color: #e74c3c;">ส่วนลด: -${this.currentDiscount.toLocaleString()} บาท</div>`;
+                        totalHTML += `<div style="font-size: 1.3em; color: #27ae60;">รวมสุทธิ: ${total.toLocaleString()} บาท</div>`;
+                    }
+                    
+                    totalElement.innerHTML = totalHTML;
+                }
+            }
+
+            displayPromotions() {
+                const container = document.getElementById('promotions');
+                if (!container) return;
+
+                if (this.promotions.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; color: #666;">ไม่มีโปรโมชัน</div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                this.promotions.forEach(promo => {
+                    const promoElement = document.createElement('div');
+                    promoElement.className = 'promotion-item';
+                    promoElement.innerHTML = `
+                        <div style="font-weight: bold; margin-bottom: 5px;">${promo.name}</div>
+                        <div style="font-size: 0.9em; color: #666; margin-bottom: 8px;">${promo.description}</div>
+                        <button class="btn" onclick="posManager.applyPromotion('${promo.id}')" style="font-size: 0.8em;">ใช้โปรโมชัน</button>
+                    `;
+                    container.appendChild(promoElement);
+                });
+            }
+
+            showStatus(message, type = 'success') {
+                const container = document.getElementById('statusMessage');
+                if (!container) return;
+
+                container.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+                
+                // ซ่อนข้อความหลัง 3 วินาที
+                setTimeout(() => {
+                    container.innerHTML = '';
+                }, 3000);
+            }
+        }
+
+        // สร้าง instance ของ POSManager
+        const posManager = new POSManager();
+
+        // ฟังก์ชันสำหรับปุ่มสั่งซื้อ
+        async function checkout() {
+            await posManager.createOrder();
+        }
+
+        // โหลดข้อมูลเมื่อหน้าเว็บโหลดเสร็จ
+        document.addEventListener('DOMContentLoaded', () => {
+            // ตรวจสอบว่าได้กำหนด API_BASE_URL แล้วหรือไม่
+            if (API_BASE_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                posManager.showStatus('⚠️ กรุณากำหนด API_BASE_URL ในไฟล์ HTML ก่อนใช้งาน', 'error');
+                return;
+            }
+
+            posManager.loadMenuItems();
+            posManager.loadPromotions();
+        });
+    </script>
+</body>
+</html>
