@@ -63,9 +63,9 @@ const ReceiptModal: React.FC<ReceiptModalProps> = ({ order, onClose }) => {
           <div ref={receiptRef} className="bg-white p-6 border border-gray-200 rounded-lg">
             {/* Store Header */}
             <div className="text-center mb-6">
-              <h2 className="text-lg font-bold text-gray-800">ร้านเครื่องดื่ม</h2>
-              <p className="text-sm text-gray-600">123 ถนนหลัก เมืองไทย 10000</p>
-              <p className="text-sm text-gray-600">โทร: 02-123-4567</p>
+              <h2 className="text-lg font-bold text-gray-800">ร้านชา-มา-รถ-ไฟ</h2>
+              <p className="text-sm text-gray-600">@ ตลาดอมรพันธ์ แยกเกษตร</p>
+              <p className="text-sm text-gray-600">โทร: 082-056-6654 หรือ 090-602-0787</p>
             </div>
 
             {/* Order Info */}
