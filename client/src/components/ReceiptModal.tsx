@@ -93,7 +93,7 @@ const ReceiptModal: React.FC<ReceiptModalProps> = ({ order, onClose }) => {
                 <tbody>
                   {order.items.map(item => (
                     <tr key={item.id}>
-                      <td className="py-1">{item.menuItem?.name}</td>
+                      <td className="py-1">{menuItem?.name || ''}</td>
                       <td className="text-center py-1">{item.quantity}</td>
                       <td className="text-right py-1">฿{item.subtotal.toFixed(2)}</td>
                     </tr>
